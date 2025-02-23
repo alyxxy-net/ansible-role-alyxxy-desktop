@@ -28,20 +28,16 @@
     name: "{{ extra_desktop_apps }}"
     state: latest
 
-
-- name: setup key for vscodium repo
-  get_url: 
-    dest: /usr/share/keyrings/vscodium-archive-keyring.gpg
-    url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-    mode: '0644'
-
-- name: add vscodium repo 
-  apt_repository: 
-    state: present
-    filename: /etc/apt/sources.list.d/vscodium.list
-    repo: "deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main"
-    validate_certs: no
-    update_cache: yes
+- name: add vscodium repo
+  deb822_repository:
+    name: vscodium
+    types: deb
+    enabled: true
+    uris: https://download.vscodium.com/debs
+    components: 
+      - vscodium 
+      - main
+    signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
 
 - name: install vscodium 
   apt:  
