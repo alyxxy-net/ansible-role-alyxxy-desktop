@@ -40,6 +40,7 @@
     state: present
     filename: /etc/apt/sources.list.d/vscodium.list
     repo: "deb [signed-by=/etc/apt/trusted.gpg.d/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main"
+    validate_certs: no
 
 - name: install vscodium 
   apt:  
@@ -57,6 +58,7 @@
     state: present
     filename: /etc/apt/sources.list.d/element-io.list
     repo: "deb [signed-by=/etc/apt/trusted.gpg.d/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian default main"
+    validate_certs: no
 
 - name: install element 
   apt:  
@@ -74,6 +76,7 @@
     state: present
     filename: /etc/apt/sources.list.d/signal-xenial.list
     repo: "deb [signed-by=/etc/apt/trusted.gpg.d/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt default main" #xenial
+    validate_certs: no
 
 - name: install signal
   apt:  
