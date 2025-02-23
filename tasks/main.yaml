@@ -34,9 +34,8 @@
     types: deb
     enabled: true
     uris: https://download.vscodium.com/debs
-    components: 
-      - vscodium 
-      - main
+    suites: vscodium 
+    components: main
     signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
 
 - name: install vscodium 
@@ -44,38 +43,30 @@
     name: codium
     state: latest
 
-- name: setup key for element repo
-  get_url: 
-    dest: /usr/share/keyrings/element-io-archive-keyring.gpg
-    url: https://packages.element.io/debian/element-io-archive-keyring.gpg
-    mode: '0644'
-
-- name: add element repo 
-  apt_repository: 
-    state: present
-    filename: /etc/apt/sources.list.d/element-io.list
-    repo: "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian default main"
-    validate_certs: no
-    update_cache: yes
+- name: add element repo
+  deb822_repository:
+    name: element
+    types: deb
+    enabled: true
+    uris: https://packages.element.io/debian
+    suites: default
+    components: main
+    signed_by: https://packages.element.io/debian/element-io-archive-keyring.gpg
 
 - name: install element 
   apt:  
     name: element-desktop
     state: latest
 
-- name: setup key for signal repo
-  get_url: 
-    dest: /usr/share/keyrings/signal-desktop-keyring.gpg
-    url: https://updates.signal.org/desktop/apt/keys.asc
-    mode: '0644'
-
-- name: add signal repo 
-  apt_repository: 
-    state: present
-    filename: /etc/apt/sources.list.d/signal-xenial.list
-    repo: "deb [signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt default main" #xenial
-    validate_certs: no
-    update_cache: yes
+- name: add signal repo
+  deb822_repository:
+    name: signal
+    types: deb
+    enabled: true
+    uris: https://updates.signal.org/desktop/apt
+    suites: default
+    components: main
+    signed_by: https://updates.signal.org/desktop/apt/keys.asc
 
 - name: install signal
   apt:  
