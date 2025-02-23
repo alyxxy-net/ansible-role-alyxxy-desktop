@@ -54,7 +54,7 @@
     types: deb
     enabled: true
     uris: https://updates.signal.org/desktop/apt
-    suites: default
+    suites: xenial
     components: main
     signed_by: https://updates.signal.org/desktop/apt/keys.asc
 
