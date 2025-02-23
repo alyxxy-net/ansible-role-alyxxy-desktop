@@ -30,6 +30,7 @@ extra_desktop_apps:
       - gallery-dl
       - syncthing
       - xournalpp
+      - emacs
 
 dev_apps:
       - git
