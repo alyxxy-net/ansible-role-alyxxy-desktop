@@ -30,16 +30,16 @@
 
 
 - name: setup key for vscodium repo
-  apt_key: 
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/keyrings/vscodium-archive-keyring.gpg
+  get_url: 
+    dest: /etc/apt/trusted.gpg.d/keyrings/vscodium-archive-keyring.gpg
     url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+    mode: '0644'
 
 - name: add vscodium repo 
   apt_repository: 
     state: present
     filename: /etc/apt/sources.list.d/vscodium.list
-    repo: "deb https://download.vscodium.com/debs vscodium main"
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main"
 
 - name: install vscodium 
   apt:  
@@ -47,16 +47,16 @@
     state: latest
 
 - name: setup key for element repo
-  apt_key: 
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/keyrings/element-io-archive-keyring.gpg
+  get_url: 
+    dest: /etc/apt/trusted.gpg.d/keyrings/element-io-archive-keyring.gpg
     url: https://packages.element.io/debian/element-io-archive-keyring.gpg
+    mode: '0644'
 
 - name: add element repo 
   apt_repository: 
     state: present
     filename: /etc/apt/sources.list.d/element-io.list
-    repo: "deb https://packages.element.io/debian default main"
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian default main"
 
 - name: install element 
   apt:  
@@ -64,16 +64,16 @@
     state: latest
 
 - name: setup key for signal repo
-  apt_key: 
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/keyrings/signal-desktop-keyring.gpg
+  get_url: 
+    dest: /etc/apt/trusted.gpg.d/keyrings/signal-desktop-keyring.gpg
     url: https://updates.signal.org/desktop/apt/keys.asc
+    mode: '0644'
 
 - name: add signal repo 
   apt_repository: 
     state: present
     filename: /etc/apt/sources.list.d/signal-xenial.list
-    repo: "deb https://updates.signal.org/desktop/apt default main" #xenial
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt default main" #xenial
 
 - name: install signal
   apt:  
