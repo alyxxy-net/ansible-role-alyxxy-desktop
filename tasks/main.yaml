@@ -38,11 +38,6 @@
     components: main
     signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
 
-- name: install vscodium 
-  apt:  
-    name: codium
-    state: latest
-
 - name: add element repo
   deb822_repository:
     name: element
@@ -53,11 +48,6 @@
     components: main
     signed_by: https://packages.element.io/debian/element-io-archive-keyring.gpg
 
-- name: install element 
-  apt:  
-    name: element-desktop
-    state: latest
-
 - name: add signal repo
   deb822_repository:
     name: signal
@@ -67,6 +57,22 @@
     suites: default
     components: main
     signed_by: https://updates.signal.org/desktop/apt/keys.asc
+
+- name: update repositories
+  apt: 
+    update_cache: yes
+    upgrade: safe
+  changed_when: False
+
+- name: install vscodium 
+  apt:  
+    name: codium
+    state: latest
+
+- name: install element 
+  apt:  
+    name: element-desktop
+    state: latest
 
 - name: install signal
   apt:  
