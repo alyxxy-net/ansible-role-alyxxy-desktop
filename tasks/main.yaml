@@ -1,0 +1,252 @@
+---
+- name: create zfs user datasets
+  when: zfs_root|bool == true
+  community.general.zfs:
+    name: "zroot/DATA/{{ item }}"
+    state: present
+    extra_zfs_properties:
+      canmount: on
+      mountpoint: "/{{ item }}"
+  loop: "{{ zfs_user_datasets }}"
+
+- name: create directories or fix ownership on user zfs datasets
+  file:
+    path: "/{{ item }}"
+    state: directory
+    owner: "{{ user }}"
+    group: users
+    mode: '750'
+  loop: "{{ zfs_user_datasets }}"
+
+- name: install desktop apps
+  apt:
+    name: "{{ desktop_apps }}"
+    state: latest
+
+- name: install extra desktop apps
+  apt:
+    name: "{{ extra_desktop_apps }}"
+    state: latest
+
+
+- name: setup key for vscodium repo
+  apt_key: 
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/keyrings/vscodium-archive-keyring.gpg
+    url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+
+- name: add vscodium repo 
+  apt_repository: 
+    state: present
+    filename: /etc/apt/sources.list.d/vscodium.list
+    repo: "deb https://download.vscodium.com/debs vscodium main"
+
+- name: install vscodium 
+  apt:  
+    name: codium
+    state: latest
+
+- name: setup key for element repo
+  apt_key: 
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/keyrings/element-io-archive-keyring.gpg
+    url: https://packages.element.io/debian/element-io-archive-keyring.gpg
+
+- name: add element repo 
+  apt_repository: 
+    state: present
+    filename: /etc/apt/sources.list.d/element-io.list
+    repo: "deb https://packages.element.io/debian default main"
+
+- name: install element 
+  apt:  
+    name: element-desktop
+    state: latest
+
+- name: setup key for signal repo
+  apt_key: 
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/keyrings/signal-desktop-keyring.gpg
+    url: https://updates.signal.org/desktop/apt/keys.asc
+
+- name: add signal repo 
+  apt_repository: 
+    state: present
+    filename: /etc/apt/sources.list.d/signal-xenial.list
+    repo: "deb https://updates.signal.org/desktop/apt default main" #xenial
+
+- name: install signal
+  apt:  
+    name: signal-desktop
+    state: latest
+
+- name: disable wifi powersave setting
+  blockinfile:
+    create: true
+    owner: root
+    group: root
+    mode: '644'
+    path: "/etc/NetworkManager/conf.d/wifi-powersave-off.conf"
+    marker: "### {mark} ansible managed wifi powersave config"
+    block: |
+      ###
+      # File to be place under /etc/NetworkManager/conf.d
+      [connection]
+      # Values are 0 (use default), 1 (ignore/don't touch), 2 (disable) or 3 (enable).
+      wifi.powersave = 2
+      ###
+
+- name: add main user to additional groups 
+  user:
+    name: "{{ user }}"
+    groups: 
+      - audio
+      - video
+      - games 
+    append: yes
+    create_home: no
+
+- name: create systemd user mode directories
+  file:
+    path: "/home/{{ user }}/.config/systemd/user/default.target.wants"
+    state: directory
+    owner: "{{ user }}"
+    group: users
+    mode: '751'
+
+- name: enable profile sync daemon service for main user
+  file:
+    src: /usr/lib/systemd/user/psd.service
+    path: "/home/{{ user }}/.config/systemd/user/default.target.wants/psd.service"
+    state: link
+    owner: "{{ user }}"
+    group: users
+
+- name: create .config/autostart directory
+  file:
+    path: "/home/{{ user }}/.config/autostart"
+    state: directory
+    owner: "{{ user }}"
+    group: users
+    mode: '750'
+
+- name: copy conky.desktop autostart file
+  copy:
+    src: "../files/.config/autostart/conky.desktop"
+    dest: "/home/{{ user }}/.config/autostart"
+    owner: "{{ user }}"
+    group: users
+    mode: '640'
+
+- name: copy conky2.desktop autostart file
+  copy:
+    src: "../files/.config/autostart/conky2.desktop"
+    dest: "/home/{{ user }}/.config/autostart"
+    owner: "{{ user }}"
+    group: users
+    mode: '640'
+
+- name: copy .conkyrc2 file
+  copy:
+    src: "../files/.conkyrc2"
+    dest: "/home/{{ user }}"
+    owner: "{{ user }}"
+    group: users
+    mode: '640'
+
+- name: copy .conkyrc.j2 template
+  template:
+    src: "../templates/.conkyrc.j2"
+    dest: "/home/{{ user }}/.conkyrc"
+    owner: "{{ user }}"
+    group: users
+    mode: '640'
+
+- name: setup conky2 autostart config file
+  lineinfile: 
+    state: present
+    create: yes
+    dest: "/home/{{ user }}/.config/autostart/conky2.desktop"
+    owner: "{{ user }}"
+    group: users
+    mode: '640'
+    regexp: '^Exec='
+    line: "Exec=conky -c /home/{{ user }}/.conkyrc2 --daemonize --pause=1"
+
+- name: copy syncthing user service
+  copy:
+    src: "../files/syncthing.service"
+    dest: "/home/{{ user }}/.config/systemd/user/"
+    owner: "{{ user }}"
+    group: users
+    mode: '640'  
+
+- name: enable syncthing service for main user
+  file:
+    src: "/home/{{ user }}/.config/systemd/user/syncthing.service"
+    path: "/home/{{ user }}/.config/systemd/user/default.target.wants/syncthing.service"
+    state: link
+    owner: "{{ user }}"
+    group: users
+
+- name: setup games
+  block:
+    - name: create zfs game datasets
+      when: zfs_root|bool == true
+      community.general.zfs:
+        name: "zroot/DATA/{{ item }}"
+        state: present
+        extra_zfs_properties:
+          canmount: on
+          mountpoint: "/{{ item }}"
+      loop: "{{ zfs_game_datasets }}"
+
+    - name: create directories or fix ownership on game zfs datasets
+      file:
+        path: "/{{ item }}"
+        state: directory
+        owner: "{{ user }}"
+        group: users
+        mode: '750'
+      loop: "{{ zfs_game_datasets }}"
+    
+    - name: setup package architecture config file
+      lineinfile: 
+        state: present
+        create: yes
+        dest: "/var/lib/dpkg/arch"
+        regexp: "amd64"
+        line: "amd64"
+
+    - name: setup architecture for games
+      lineinfile: 
+        state: present
+        create: yes
+        dest: "/var/lib/dpkg/arch"
+        regexp: "i386"
+        line: "i386"
+
+    - name: update repositories
+      apt: 
+        update_cache: yes
+        upgrade: safe
+      changed_when: False
+
+    - name: accept steam license
+      debconf:
+        name: "steam"
+        question: "steam/question"
+        value: "I AGREE"
+        vtype: "select"
+
+    - name: install game packages
+      apt:
+        name: "{{ game_apps }}"
+        state: latest
+
+- name: setup dev environment
+  block:
+    - name: install development packages
+      apt:
+        name: "{{ dev_apps }}"
+        state: latest

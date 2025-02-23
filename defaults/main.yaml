@@ -1,0 +1,67 @@
+---
+desktop_apps:
+      - firefox-esr
+      - profile-sync-daemon
+      - print-manager
+      - cups-browsed
+      - conky-all
+      - gimp
+      - acpid 
+      - keyutils
+      - libreoffice-writer
+      - libreoffice-impress
+      - libreoffice-math
+      - libreoffice-draw
+      - libreoffice-calc
+      - libreoffice-common
+      - libreoffice-core
+
+extra_desktop_apps:
+      - hugo
+      - texlive-base
+      - texlive-bibtex-extra
+      - texlive-fonts-extra
+      - texlive-latex-base-doc
+      - texlive-latex-base
+      - texlive-latex-extra-doc
+      - texlive-latex-extra
+      - calibre
+      - yt-dlp
+      - gallery-dl
+      - syncthing
+      - xournalpp
+
+dev_apps:
+      - git
+      - make
+      - cmake
+      - dialog
+      - build-essential
+      - python3-ipython
+      - zeal
+      
+vscode_settings_gist: "dabef92f779d3ec58846bdeb18d3adaf"
+
+game_apps:
+      - libglx-mesa0:i386 
+      - mesa-vulkan-drivers:i386 
+      - libgl1-mesa-dri:i386
+      - mesa-vulkan-drivers
+      - wine
+      - steam 
+      - supertux
+      - supertuxkart
+
+zfs_user_datasets:
+      - "home/{{ user }}/.config"
+      - "home/{{ user }}/.local"
+      - "home/{{ user }}/.local/share"
+      - "home/{{ user }}/Documents"
+      - "home/{{ user }}/Downloads"
+      - "home/{{ user }}/Music"
+      - "home/{{ user }}/Pictures"
+      - "home/{{ user }}/Videos"
+      - "home/{{ user }}/Games"
+
+zfs_game_datasets:
+      - "home/{{ user }}/.steam"
