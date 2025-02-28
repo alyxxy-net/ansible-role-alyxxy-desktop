@@ -28,56 +28,87 @@
     name: "{{ extra_desktop_apps }}"
     state: latest
 
-- name: add vscodium repo
-  deb822_repository:
-    name: vscodium
-    types: deb
-    enabled: true
-    uris: https://download.vscodium.com/debs
-    suites: vscodium 
-    components: main
-    signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+- name: install apps that require extra repositories
+  block:
+    - name: add vscodium repo
+      deb822_repository:
+        name: vscodium
+        types: deb
+        enabled: true
+        uris: https://download.vscodium.com/debs
+        suites: vscodium 
+        components: main
+        signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
 
-- name: add element repo
-  deb822_repository:
-    name: element
-    types: deb
-    enabled: true
-    uris: https://packages.element.io/debian
-    suites: default
-    components: main
-    signed_by: https://packages.element.io/debian/element-io-archive-keyring.gpg
+    - name: add element repo
+      deb822_repository:
+        name: element
+        types: deb
+        enabled: true
+        uris: https://packages.element.io/debian
+        suites: default
+        components: main
+        signed_by: https://packages.element.io/debian/element-io-archive-keyring.gpg
 
-- name: add signal repo
-  deb822_repository:
-    name: signal
-    types: deb
-    enabled: true
-    uris: https://updates.signal.org/desktop/apt
-    suites: xenial
-    components: main
-    signed_by: https://updates.signal.org/desktop/apt/keys.asc
+    - name: add signal repo
+      deb822_repository:
+        name: signal
+        types: deb
+        enabled: true
+        uris: https://updates.signal.org/desktop/apt
+        suites: xenial
+        components: main
+        signed_by: https://updates.signal.org/desktop/apt/keys.asc
 
-- name: update repositories
-  apt: 
-    update_cache: yes
-    upgrade: safe
-  changed_when: False
+    - name: update repositories
+      apt: 
+        update_cache: yes
+        upgrade: safe
+      changed_when: False
 
-- name: install vscodium 
-  apt:  
-    name: codium
-    state: latest
+    - name: install vscodium 
+      apt:  
+        name: codium
+        state: latest
 
-- name: install element 
-  apt:  
-    name: element-desktop
-    state: latest
+    - name: install element 
+      apt:  
+        name: element-desktop
+        state: latest
 
-- name: install signal
-  apt:  
-    name: signal-desktop
-    state: latest
+    - name: install signal
+      apt:  
+        name: signal-desktop
+        state: latest
+
+- name: install apps from deb files
+  block:
+    - name: install draw.io
+      apt:  
+        deb: https://github.com/jgraph/drawio-desktop/releases/download/v26.0.16/drawio-amd64-26.0.16.deb
+
+    - name: install zoom
+      apt:  
+        deb: https://zoom.us/client/6.3.10.7150/zoom_amd64.deb
+
+    - name: install discord
+      apt:  
+        deb: https://discord.com/api/download?platform=linux&format=deb
+
+    - name: setup protonvpn repo
+      apt:  
+        deb: https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.6_all.deb
+
+    - name: update repositories
+      apt: 
+        update_cache: yes
+        upgrade: safe
+      changed_when: False
+
+    - name: install protonvpn
+      apt:  
+        name: protonvpn
+        state: latest
 
 - name: disable wifi powersave setting
   blockinfile:
