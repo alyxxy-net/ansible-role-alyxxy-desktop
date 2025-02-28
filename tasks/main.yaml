@@ -55,21 +55,10 @@
 
 - name: install apps from deb files
   block:
-    - name: install draw.io
+    - name: "install {{ item.name }}" 
+      loop: "{{ deb_file_apps }}"
       apt:  
-        deb: https://github.com/jgraph/drawio-desktop/releases/download/v26.0.16/drawio-amd64-26.0.16.deb
-
-    - name: install zoom
-      apt:  
-        deb: https://zoom.us/client/6.3.10.7150/zoom_amd64.deb
-
-    - name: install discord
-      apt:  
-        deb: https://discord.com/api/download?platform=linux&format=deb
-
-    - name: setup protonvpn repo
-      apt:  
-        deb: https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.6_all.deb
+        deb: "{{ item.deb }}"
 
     - name: update repositories
       apt: 
@@ -77,9 +66,11 @@
         upgrade: safe
       changed_when: False
 
-    - name: install protonvpn
+    - name: "install {{ item.name }}" 
+      loop: "{{ deb_file_apps }}"
+      when: item.repo_only|bool == False
       apt:  
-        name: protonvpn
+        name: "{{ item.pkg }}"
         state: latest
 
 - name: disable wifi powersave setting
