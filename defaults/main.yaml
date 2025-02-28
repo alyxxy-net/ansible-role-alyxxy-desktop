@@ -1,11 +1,11 @@
 ---
 desktop_apps:
       - firefox-esr
+      - torbrowser-launcher
       - profile-sync-daemon
       - print-manager
       - cups-browsed
       - conky-all
-      - gimp
       - acpid 
       - keyutils
       - libreoffice-writer
@@ -17,7 +17,6 @@ desktop_apps:
       - libreoffice-core
 
 extra_desktop_apps:
-      - hugo
       - texlive-base
       - texlive-bibtex-extra
       - texlive-fonts-extra
@@ -31,6 +30,33 @@ extra_desktop_apps:
       - syncthing
       - xournalpp
       - emacs
+      - gimp
+      - inkscape
+      - audacity
+
+extra_repo_apps:      
+      - name: vscodium
+        uri: https://download.vscodium.com/debs
+        suite: vscodium 
+        component: main
+        key: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+        pkg: codium
+
+      - name: element
+        uri: https://packages.element.io/debian
+        suite: default
+        component: main
+        key: https://packages.element.io/debian/element-io-archive-keyring.gpg
+        pkg: element-desktop
+
+      - name: signal
+        types: deb
+        enabled: true
+        uri: https://updates.signal.org/desktop/apt
+        suite: xenial
+        component: main
+        key: https://updates.signal.org/desktop/apt/keys.asc
+        pkg: signal-desktop
 
 dev_apps:
       - git
@@ -39,8 +65,7 @@ dev_apps:
       - dialog
       - build-essential
       - python3-ipython
-      
-vscode_settings_gist: "dabef92f779d3ec58846bdeb18d3adaf"
+      - hugo
 
 game_apps:
       - libglx-mesa0:i386 

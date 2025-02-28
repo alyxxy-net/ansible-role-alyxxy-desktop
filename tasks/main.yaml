@@ -30,35 +30,16 @@
 
 - name: install apps that require extra repositories
   block:
-    - name: add vscodium repo
+    - name: "add {{ item.name }} repo"
+      loop: extra_repo_apps
       deb822_repository:
-        name: vscodium
+        name: "{{ item.name }}"
         types: deb
         enabled: true
-        uris: https://download.vscodium.com/debs
-        suites: vscodium 
-        components: main
-        signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-
-    - name: add element repo
-      deb822_repository:
-        name: element
-        types: deb
-        enabled: true
-        uris: https://packages.element.io/debian
-        suites: default
-        components: main
-        signed_by: https://packages.element.io/debian/element-io-archive-keyring.gpg
-
-    - name: add signal repo
-      deb822_repository:
-        name: signal
-        types: deb
-        enabled: true
-        uris: https://updates.signal.org/desktop/apt
-        suites: xenial
-        components: main
-        signed_by: https://updates.signal.org/desktop/apt/keys.asc
+        uris: "{{ item.uri }}"
+        suites: "{{ item.suite }}"
+        components: "{{ item.component }}"
+        signed_by: "{{ item.key }}"
 
     - name: update repositories
       apt: 
@@ -66,19 +47,10 @@
         upgrade: safe
       changed_when: False
 
-    - name: install vscodium 
+    - name: "install {{ item.name }}"
+      loop: extra_repo_apps
       apt:  
-        name: codium
-        state: latest
-
-    - name: install element 
-      apt:  
-        name: element-desktop
-        state: latest
-
-    - name: install signal
-      apt:  
-        name: signal-desktop
+        name: "{{ item.pkg }}"
         state: latest
 
 - name: install apps from deb files
