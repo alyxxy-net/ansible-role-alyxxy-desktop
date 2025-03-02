@@ -31,7 +31,7 @@
 - name: install apps that require extra repositories
   block:
     - name: "add {{ item.name }} repo"
-      loop: extra_repo_apps
+      loop: "{{ extra_repo_apps }}"
       deb822_repository:
         name: "{{ item.name }}"
         types: deb
@@ -48,7 +48,7 @@
       changed_when: False
 
     - name: "install {{ item.name }}"
-      loop: extra_repo_apps
+      loop: "{{ extra_repo_apps }}"
       apt:  
         name: "{{ item.pkg }}"
         state: latest
