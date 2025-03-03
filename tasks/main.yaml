@@ -30,7 +30,7 @@
 
 - name: install apps that require extra repositories
   block:
-    - name: "add {{ item.name }} repo"
+    - name: "add repo"
       loop: "{{ extra_repo_apps }}"
       deb822_repository:
         name: "{{ item.name }}"
@@ -44,10 +44,9 @@
     - name: update repositories
       apt: 
         update_cache: yes
-        upgrade: safe
       changed_when: False
 
-    - name: "install {{ item.name }}"
+    - name: "install package"
       loop: "{{ extra_repo_apps }}"
       apt:  
         name: "{{ item.pkg }}"
@@ -55,7 +54,7 @@
 
 - name: install apps from deb files
   block:
-    - name: "install {{ item.name }}" 
+    - name: "install package from deb file" 
       loop: "{{ deb_file_apps }}"
       apt:  
         deb: "{{ item.deb }}"
@@ -63,10 +62,9 @@
     - name: update repositories
       apt: 
         update_cache: yes
-        upgrade: safe
       changed_when: False
 
-    - name: "install {{ item.name }}" 
+    - name: "install package from deb file repo" 
       loop: "{{ deb_file_apps }}"
       when: item.repo_only|bool == False
       apt:  
