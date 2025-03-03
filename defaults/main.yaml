@@ -59,19 +59,19 @@ extra_repo_apps:
 deb_file_apps: 
       - name: draw.io
         deb: https://github.com/jgraph/drawio-desktop/releases/download/v26.0.16/drawio-amd64-26.0.16.deb
-        repo_only: True
+        repo_only: False
 
       - name: zoom
         deb: https://zoom.us/client/6.3.10.7150/zoom_amd64.deb
-        repo_only: True
+        repo_only: False
 
       - name: discord
         deb: https://discord.com/api/download?platform=linux&format=deb
-        repo_only: True
+        repo_only: False
 
       - name: protonvpn
         deb: https://zoom.us/client/6.3.10.7150/zoom_amd64.deb
-        repo_only: False
+        repo_only: True
         pkg: protonvpn
 
 dev_apps:
