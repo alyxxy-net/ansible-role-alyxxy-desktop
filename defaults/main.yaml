@@ -70,7 +70,7 @@ deb_file_apps:
         repo_only: False
 
       - name: protonvpn
-        deb: https://zoom.us/client/6.3.10.7150/zoom_amd64.deb
+        deb: https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.6_all.deb
         repo_only: True
         pkg: protonvpn
 
