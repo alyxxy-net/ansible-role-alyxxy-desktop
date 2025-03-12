@@ -180,6 +180,16 @@
     owner: "{{ user }}"
     group: users
 
+- name: touchscreen configurations
+  when: touchscreen|bool == True
+  block:
+    - name: configure firefox touch scrolling
+      lineinfile:
+        state: present
+        path: "/etc/security/pam_env.conf"
+        regexp: 'MOZ_USE_XINPUT2 DEFAULT=1'
+        line: 'MOZ_USE_XINPUT2 DEFAULT=1'
+
 - name: setup games
   block:
     - name: create zfs game datasets
