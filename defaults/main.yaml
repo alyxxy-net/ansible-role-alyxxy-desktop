@@ -33,6 +33,7 @@ extra_desktop_apps:
       - gimp
       - inkscape
       - audacity
+      - tokodon
 
 extra_repo_apps:      
       - name: vscodium
